@@ -1,5 +1,5 @@
 from cgitb import text
-from turtle import update
+#from turtle import update
 from typing import DefaultDict
 import pdfplumber
 import io
@@ -1049,8 +1049,14 @@ def read(filename):
 			CHI_PHI_HANG_THANG["CHI_PHI_HANG_THANG"].update(danhmuc)	
 		FILL_RESULT.update(CHI_PHI_HANG_THANG)
 	if	(PRETAX_AMOUNT3 is not None) or (AFTERTAX_AMOUNT3 is not None):
+		if list_content != []:
+			danhmuc={"danh muc":list_content[0]}
+			CHI_PHI_DAU_NOI_HOA_MANG["CHI_PHI_DAU_NOI_HOA_MANG"].update(danhmuc)		
 		FILL_RESULT.update(CHI_PHI_DAU_NOI_HOA_MANG)
 	if	(PRETAX_AMOUNT3 is not None) or (AFTERTAX_AMOUNT3 is not None):
+		if list_content != []:
+			danhmuc={"danh muc":list_content[1]}
+			CUOC_PHI_SU_DUNG_DICH_VU["CUOC_PHI_SU_DUNG_DICH_VU"].update(danhmuc)
 		FILL_RESULT.update(CUOC_PHI_SU_DUNG_DICH_VU)
 	return FILL_RESULT
 

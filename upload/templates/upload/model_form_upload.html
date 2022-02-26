@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <table >
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form }}
+        <button class="button button1" type="submit" style="height:50px;width:100px;font-family:'verdana'">Submit</button>
+      </form>
+    <br>
+    <a href="{% url 'home' %} ">
+    <button class="button button1" type="submit" style="height:50px;width:100px;font-family:'verdana'">Return to home 
+    </button> </a>
+
+
+    
+<table style='border: 2px solid black'>
+    <nav>
+      {%for key,val in lists.items %}
+      <tr >
+        <td style="font-family:'Copperplate';font-size: 23px;background-color:whitesmoke;border: 1px">{{ key }}</td>
+        {%for key1,val1 in val.items %}
+        <tr>
+          <td style="font-family:'Copperplate';background-color:whitesmoke" >{{ key1 }}:</td>
+          <td style="font-family:'Copperplate';background-color:whitesmoke" >{{ val1 }}</td>
+        </tr>
+      {% endfor %}
+      </tr>
+    {% endfor %}
+  </nav>
+{% endblock %}

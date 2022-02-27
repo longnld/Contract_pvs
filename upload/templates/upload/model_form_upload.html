@@ -1,31 +1,34 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div style="width: 90%"">
   <table >
       <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form }}
-        <button class="button button1" type="submit" style="height:50px;width:100px;font-family:'verdana'">Submit</button>
-      </form>
-    <br>
-    <a href="{% url 'home' %} ">
-    <button class="button button1" type="submit" style="height:50px;width:100px;font-family:'verdana'">Return to home 
-    </button> </a>
-
-
+        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+          <div class="btn-group mr-2" role="group" aria-label="First group">
+            <button type="submit" class="btn btn-secondary" style="background:grey;border-width: 2px  "> Submit</button>
+            <a href="{% url 'home' %} "><button type="button" class="btn btn-secondary"style="background:grey;border-width: 2px  ">
     
-<table style='border: 2px solid black'>
-    <nav>
+              Return to home </button></a>
+          </div>
+        </div>
+      </form>
+
+<table class="table">
+  <tbody>
       {%for key,val in lists.items %}
       <tr >
-        <td style="font-family:'Copperplate';font-size: 23px;background-color:whitesmoke;border: 1px">{{ key }}</td>
+        <th style="font-family:'Copperplate';font-size: 23px;background-color:whitesmoke;border: 1px" scope="row">{{ key }}</th>
         {%for key1,val1 in val.items %}
-        <tr>
-          <td style="font-family:'Copperplate';background-color:whitesmoke" >{{ key1 }}:</td>
+        <div>
+          <th style="font-family:'Copperplate';background-color:whitesmoke" scope="row" >{{ key1 }}:</th>
           <td style="font-family:'Copperplate';background-color:whitesmoke" >{{ val1 }}</td>
-        </tr>
+        </div>
       {% endfor %}
       </tr>
     {% endfor %}
-  </nav>
+    <tbody>
+    </div>
 {% endblock %}

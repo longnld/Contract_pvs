@@ -1,17 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <a href="{% url 'model_form_upload' %}" ><button class="button button1" style="height:50px;width:100px;font-family:'verdana'">Upload</button> </a>
+  <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+  <div class="btn-group mr-2" role="group" aria-label="First group">
+    <a href="{% url 'model_form_upload' %}" ><button type="button" class="btn btn-secondary" style="background:grey;padding:20px 60px">Upload</button></a>
+  </div>
 
-
-<table>
-  <tr>
-
-  </tr>
-  <ul>
-    <nav>
- 
-  </nav>
-  </ul>
 
 {% endblock %}

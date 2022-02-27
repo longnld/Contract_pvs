@@ -6,35 +6,7 @@ import io
 import re
 import ast
 def read(filename):
-#---------------------------------------------------------------------------------
-# BỘ LỌC CHIA LAYOUT (CẬP NHẬT NẾU CÓ MẪU HÓA ĐƠN MỚI)
-#---------------------------------------------------------------------------------
-	#---------------------------------------------------------------------
-	begin_ZONE_INFO 					= 		['HỢP ĐỒNG','Số:']
-	
-	end_ZONE_INFO 						= 		['Bên A','Người đại diện :']
-	#------------------------------------------------------------
-	begin_CONTRACTORS_A                 =['Bên A','Người đại diện :']
-	
-	end_CONTRACTORS_A                   =['Mã số thuế :']
-	
-	begin_CONTRACTORS_B                 =['Bên B']
-	
-	end_CONTRACTORS_B                   =['ĐIỀU 1: ']
 
-	#-----------------------------------------------------------------
-	begin_zone_CONTRACT_VALUE			=['GIÁ TRỊ HỢP ĐỒNG',"Giá trị hợp đồng:","PHƯƠNG THỨC THANH TOÁN"]
-	end_zone_CONTRACT_VALUE				=['Thủ tục thanh toán','THANH TOÁN CHẬM VÀ ĐIỀU CHỈNH HÓA ĐƠN']
-	begin_zone_SETUP					=['Chi phí lắp đặt : ','Chi phí lắp đặt:']
-	end_zone_SETUP						=['Chi phí bảo trì :','Chi phí hàng tháng']
-	begin_MONTHCOST                     =['Chi phí hàng tháng','Chi phí bảo trì :']
-	end_MONTHCOST                       =['Thủ tục thanh toán']
-	begin_zone_SETUP2					=['Chi phí đấu nối, hòa mạng (thanh toán 01 (một) lần):','Chi phí đấu nối, hòa mạng ']
-	end_zone_SETUP2						=['Cước phí sử dụng dịch vụ Kênh MPLS','Cước phí sử dụng ',' dịch vụ Kênh MPLS']
-	begin_zone_SETUP3					=["Cước phí sử dụng dịch vụ Kênh MPLS",'Cước phí sử dụng ',' dịch vụ Kênh MPLS']
-	end_zone_SETUP3						=["ĐIỀU 4: THANH TOÁN CHẬM VÀ ĐIỀU CHỈNH HÓA ĐƠN",'ĐIỀU 4']
-
-#-----------------------------------------------------------------------------
 	pdf = pdfplumber.open(filename)#
 	total_pages = len(pdf.pages) #Đọc số trang file pdf
 	#print(total_pages)
@@ -90,7 +62,35 @@ def read(filename):
 					
 		#list_content.append(list_content1)
 	#print(list_content)
+#---------------------------------------------------------------------------------
+# BỘ LỌC CHIA LAYOUT (CẬP NHẬT NẾU CÓ MẪU HÓA ĐƠN MỚI)
+#---------------------------------------------------------------------------------
+	#---------------------------------------------------------------------
+	begin_ZONE_INFO 					= 		['HỢP ĐỒNG','Số:']
+	
+	end_ZONE_INFO 						= 		['Bên A','Người đại diện :']
+	#------------------------------------------------------------
+	begin_CONTRACTORS_A                 =['Bên A','Người đại diện :']
+	
+	end_CONTRACTORS_A                   =['Mã số thuế :']
+	
+	begin_CONTRACTORS_B                 =['Bên B']
+	
+	end_CONTRACTORS_B                   =['ĐIỀU 1: ']
 
+	#-----------------------------------------------------------------
+	begin_zone_CONTRACT_VALUE			=['GIÁ TRỊ HỢP ĐỒNG',"Giá trị hợp đồng:","PHƯƠNG THỨC THANH TOÁN"]
+	end_zone_CONTRACT_VALUE				=['Thủ tục thanh toán','THANH TOÁN CHẬM VÀ ĐIỀU CHỈNH HÓA ĐƠN']
+	begin_zone_SETUP					=['Chi phí lắp đặt : ','Chi phí lắp đặt:']
+	end_zone_SETUP						=['Chi phí bảo trì :','Chi phí hàng tháng']
+	begin_MONTHCOST                     =['Chi phí hàng tháng','Chi phí bảo trì :']
+	end_MONTHCOST                       =['Thủ tục thanh toán']
+	begin_zone_SETUP2					=['Chi phí đấu nối, hòa mạng (thanh toán 01 (một) lần):','Chi phí đấu nối, hòa mạng ']
+	end_zone_SETUP2						=['Cước phí sử dụng dịch vụ Kênh MPLS','Cước phí sử dụng ',' dịch vụ Kênh MPLS']
+	begin_zone_SETUP3					=["Cước phí sử dụng dịch vụ Kênh MPLS",'Cước phí sử dụng ',' dịch vụ Kênh MPLS']
+	end_zone_SETUP3						=["ĐIỀU 4: THANH TOÁN CHẬM VÀ ĐIỀU CHỈNH HÓA ĐƠN",'ĐIỀU 4']
+
+#-----------------------------------------------------------------------------
 #---------------------------------------------------------------------------------
 
 #VẼ LAYOUT HỢP ĐỒNG
@@ -1039,23 +1039,22 @@ def read(filename):
 	#FILL_RESULT.update(CUOC_PHI_SU_DUNG_DICH_VU)
 	if	(PRETAX_AMOUNT is not None) or (AFTERTAX_AMOUNT is not None):
 		if list_content != []:
-			danhmuc={"danh muc":list_content[0]}
+			danhmuc={"DANH_MUC":list_content[0]}
 			CHI_PHI_LAP_DAT["CHI_PHI_LAP_DAT"].update(danhmuc)
 		FILL_RESULT.update(CHI_PHI_LAP_DAT)
-
 	if	(PRETAX_AMOUNT2 is not None) or (AFTERTAX_AMOUNT2 is not None):
 		if list_content != []:
-			danhmuc={"danh muc":list_content[1]}
+			danhmuc={"DANH_MUC":list_content[1]}
 			CHI_PHI_HANG_THANG["CHI_PHI_HANG_THANG"].update(danhmuc)	
 		FILL_RESULT.update(CHI_PHI_HANG_THANG)
 	if	(PRETAX_AMOUNT3 is not None) or (AFTERTAX_AMOUNT3 is not None):
 		if list_content != []:
-			danhmuc={"danh muc":list_content[0]}
+			danhmuc={"DANH_MUC":list_content[0]}
 			CHI_PHI_DAU_NOI_HOA_MANG["CHI_PHI_DAU_NOI_HOA_MANG"].update(danhmuc)		
 		FILL_RESULT.update(CHI_PHI_DAU_NOI_HOA_MANG)
 	if	(PRETAX_AMOUNT3 is not None) or (AFTERTAX_AMOUNT3 is not None):
 		if list_content != []:
-			danhmuc={"danh muc":list_content[1]}
+			danhmuc={"DANH_MUC":list_content[1]}
 			CUOC_PHI_SU_DUNG_DICH_VU["CUOC_PHI_SU_DUNG_DICH_VU"].update(danhmuc)
 		FILL_RESULT.update(CUOC_PHI_SU_DUNG_DICH_VU)
 	return FILL_RESULT

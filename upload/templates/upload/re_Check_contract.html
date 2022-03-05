@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 
 {% block content %}
@@ -17,18 +18,13 @@
       </form>
 
 <table class="table">
-  {% if lists %}
-  
-      {%for key,val in lists.items %}
-      <tr>
-        <th style="font-family:'Copperplate';font-size: 23px;background-color:whitesmoke;border: 1px" scope="row">{{ key }}</th>
-        {%for key1,val1 in val.items %}
-        <div>
-          <th style="font-family:'Copperplate';background-color:whitesmoke" scope="row" >{{ key1 }}</th>
-          <td style="font-family:'Copperplate';background-color:whitesmoke" >{{ val1 }}</td>
-        </div>
-      {% endfor %}
-      </tr>
-    {% endfor %}
-  {% endif%}
+    <div class="alert">
+        <span  class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
+        <strong>Hãy kiểm tra lại</strong> Không lọc được các trường cần có.
+      </div>
+<div>
+{% for x in lists %}
+<p>{{x}}</p>
+{% endfor%}
+</div>
 {% endblock %}

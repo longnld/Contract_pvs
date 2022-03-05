@@ -16,8 +16,11 @@ def model_form_upload(request):
 		if form.is_valid():
 			file=request.FILES.get('document')
 			lists=read(file)
-			return render(request, 'upload/model_form_upload.html', {'lists':lists})
-
+			print(type(lists))
+			if type(lists)==dict:
+				return render(request, 'upload/model_form_upload.html', {'lists':lists})
+			else:
+				return render(request, 'upload/re_Check_contract.html', {'lists':lists})
 	else:
 		form=DocumentForm()
 	return render(request,'upload/model_form_upload.html',{'form':form})

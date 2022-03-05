@@ -17,18 +17,22 @@
       </form>
 
 <table class="table">
-  <tbody>
+  {% for x in lists %}
+  <p>{{x}}</p>
+  {% endfor%}
+
+  <body>
       {%for key,val in lists.items %}
-      <tr >
+      <tr>
         <th style="font-family:'Copperplate';font-size: 23px;background-color:whitesmoke;border: 1px" scope="row">{{ key }}</th>
         {%for key1,val1 in val.items %}
         <div>
-          <th style="font-family:'Copperplate';background-color:whitesmoke" scope="row" >{{ key1 }}:</th>
+          <th style="font-family:'Copperplate';background-color:whitesmoke" scope="row" >{{ key1 }}</th>
           <td style="font-family:'Copperplate';background-color:whitesmoke" >{{ val1 }}</td>
         </div>
       {% endfor %}
       </tr>
     {% endfor %}
-    <tbody>
+    </body>
     </div>
 {% endblock %}

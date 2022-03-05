@@ -1,12 +1,12 @@
 from cgitb import text
 #from turtle import update
 from typing import DefaultDict
+from numpy import fill_diagonal
 import pdfplumber
 import io
 import re
 import ast
 def read(filename):
-
 	pdf = pdfplumber.open(filename)#
 	total_pages = len(pdf.pages) #Đọc số trang file pdf
 	#print(total_pages)
@@ -20,11 +20,7 @@ def read(filename):
 		for i in range(total_pages):
 			page_i=pdf.pages[i]			
 			if page_i is not None : 
-				#print(page_i)
-				#print("-------------------------------------------------------------------")
 				tables = page_i.find_tables()
-				#print(tables)
-
 				if tables != []:
 					for i in tables:
 						for x in i.extract(x_tolerance=5):
@@ -32,9 +28,8 @@ def read(filename):
 								list_table.append(i.extract(x_tolerance=5))
 				text_i=page_i.extract_text()
 				text+=text_i
-		#print(text.count("TT"))	
-	#print(text)
-	#print(list_table)
+	x=text.splitlines()
+	#print(x)	
 	new_list_table=[]
 	for list_1 in list_table:
 		new_list=[]
@@ -56,12 +51,6 @@ def read(filename):
 				if any(word.strip() in line for word in str_STT):
 					list_content_iterable.append(line[1])
 			list_content.append(list_content_iterable)
-			#print("-------------------")
-	#print(list_content)
-					
-					
-		#list_content.append(list_content1)
-	#print(list_content)
 #---------------------------------------------------------------------------------
 # BỘ LỌC CHIA LAYOUT (CẬP NHẬT NẾU CÓ MẪU HÓA ĐƠN MỚI)
 #---------------------------------------------------------------------------------
@@ -103,7 +92,6 @@ def read(filename):
 			if any(word in line for word in begin_ZONE_INFO):
 				begin_lines_ZONE_INFO=int(number)
 				begin_line_ZONE_INFO_list.append(begin_lines_ZONE_INFO)
-				#print(begin_lines_ZONE_INFO)
 
 	if len(begin_line_ZONE_INFO_list)>0:
 		begin_line_ZONE_INFO=min(begin_line_ZONE_INFO_list)
@@ -116,14 +104,11 @@ def read(filename):
 			if any(word in line for word in end_ZONE_INFO):
 				end_lines_ZONE_INFO=int(number)
 				end_line_ZONE_INFO_list.append(end_lines_ZONE_INFO)
-				#print(end_lines_ZONE_INFO)
 	
 	if len(end_line_ZONE_INFO_list)>0:
 		end_line_ZONE_INFO=min(end_line_ZONE_INFO_list)
 	else:
 		end_line_ZONE_INFO=None
-	#print("begin"+str(begin_line_ZONE_INFO))
-	#print("end"+str(end_line_ZONE_INFO))
 	
 	if begin_line_ZONE_INFO is not None and end_line_ZONE_INFO is not None:
 		if begin_line_ZONE_INFO >1:
@@ -1026,38 +1011,42 @@ def read(filename):
 #--------------------------------------------------------------------------
 
 
-	CUOC_PHI_SU_DUNG_DICH_VU	={"CUOC_PHI_SU_DUNG_DICH_VU":{"PRETAX_AMOUNT":PRETAX_AMOUNT4,"AFTERTAX_AMOUNT":AFTERTAX_AMOUNT4}}
-	CHI_PHI_DAU_NOI_HOA_MANG	={"CHI_PHI_DAU_NOI_HOA_MANG":{"PRETAX_AMOUNT":PRETAX_AMOUNT3,"AFTERTAX_AMOUNT":AFTERTAX_AMOUNT3}}
-	CHI_PHI_HANG_THANG			={"CHI_PHI_HANG_THANG":{"PRETAX_AMOUNT":PRETAX_AMOUNT2,"AFTERTAX_AMOUNT":AFTERTAX_AMOUNT2}}
-	CHI_PHI_LAP_DAT				={"CHI_PHI_LAP_DAT":{"PRETAX_AMOUNT":PRETAX_AMOUNT,"AFTERTAX_AMOUNT":AFTERTAX_AMOUNT}}
+	CUOC_PHI_SU_DUNG_DICH_VU	={"Cước phí sử dụng dịch vụ":{"Tiền trước thuế":PRETAX_AMOUNT4,"Tiền sau thuế":AFTERTAX_AMOUNT4}}
+	CHI_PHI_DAU_NOI_HOA_MANG	={"Chi phí đấu nối hòa mạng":{"Tiền trước thuế":PRETAX_AMOUNT3,"Tiền sau thuế":AFTERTAX_AMOUNT3}}
+	CHI_PHI_HANG_THANG			={"Chi phí hàng tháng":{"Tiền trước thuế":PRETAX_AMOUNT2,"Tiền sau thuế":AFTERTAX_AMOUNT2}}
+	CHI_PHI_LAP_DAT				={"Chi phí lắp đặt":{"Tiền trước thuế":PRETAX_AMOUNT,"Tiền sau thuế":AFTERTAX_AMOUNT}}
 	#result
-	FILL_RESULT = 	{"CONTRACT":{"CONTRACT_NAME":CONTRACT_NAME,"TEMPLE_CODE":TEMPLE_CODE},
-					"BEN_A":{"BUYER":BUYER,"DIA_CHI":adress1, "TAX_CODE":BUYER_TAXCODE1},
-					"BEN_B":{"SELLER":SELLER,"DIA_CHI":adress2,"TAX_CODE":SELLER_TAXCODE1}
+	FILL_RESULT = 	{"Hợp đồng":{"Hợp đồng":CONTRACT_NAME,"Số hợp đồng":TEMPLE_CODE},
+					"Bên A":{"Người đại diện":BUYER,"địa chỉ":adress1, "Mã số thuế":BUYER_TAXCODE1},
+					"Bên B":{"Người đại diện":SELLER,"địa chỉ":adress2,"Mã số thuế":SELLER_TAXCODE1}
 					}
 	#FILL_RESULT.update(CHI_PHI_DAU_NOI_HOA_MANG)
 	#FILL_RESULT.update(CUOC_PHI_SU_DUNG_DICH_VU)
 	if	(PRETAX_AMOUNT is not None) or (AFTERTAX_AMOUNT is not None):
 		if list_content != []:
-			danhmuc={"DANH_MUC":list_content[0]}
-			CHI_PHI_LAP_DAT["CHI_PHI_LAP_DAT"].update(danhmuc)
+			danhmuc={"Danh mục":list_content[0]}
+			CHI_PHI_LAP_DAT["Chi phí lắp đặt"].update(danhmuc)
 		FILL_RESULT.update(CHI_PHI_LAP_DAT)
 	if	(PRETAX_AMOUNT2 is not None) or (AFTERTAX_AMOUNT2 is not None):
 		if list_content != []:
-			danhmuc={"DANH_MUC":list_content[1]}
-			CHI_PHI_HANG_THANG["CHI_PHI_HANG_THANG"].update(danhmuc)	
+			danhmuc={"Danh mục":list_content[1]}
+			CHI_PHI_HANG_THANG["Chi phí hàng tháng"].update(danhmuc)	
 		FILL_RESULT.update(CHI_PHI_HANG_THANG)
 	if	(PRETAX_AMOUNT3 is not None) or (AFTERTAX_AMOUNT3 is not None):
 		if list_content != []:
-			danhmuc={"DANH_MUC":list_content[0]}
-			CHI_PHI_DAU_NOI_HOA_MANG["CHI_PHI_DAU_NOI_HOA_MANG"].update(danhmuc)		
+			danhmuc={"Danh mục":list_content[0]}
+			CHI_PHI_DAU_NOI_HOA_MANG["Chi phí đấu nối hòa mạng"].update(danhmuc)		
 		FILL_RESULT.update(CHI_PHI_DAU_NOI_HOA_MANG)
 	if	(PRETAX_AMOUNT3 is not None) or (AFTERTAX_AMOUNT3 is not None):
 		if list_content != []:
-			danhmuc={"DANH_MUC":list_content[1]}
-			CUOC_PHI_SU_DUNG_DICH_VU["CUOC_PHI_SU_DUNG_DICH_VU"].update(danhmuc)
+			danhmuc={"Danh mục":list_content[1]}
+			CUOC_PHI_SU_DUNG_DICH_VU["Cước phí sử dụng dịch vụ"].update(danhmuc)
 		FILL_RESULT.update(CUOC_PHI_SU_DUNG_DICH_VU)
-	return FILL_RESULT
+	list_field=[CONTRACT_NAME,TEMPLE_CODE,BUYER,adress1,BUYER_TAXCODE1,SELLER,adress2,SELLER_TAXCODE1]
+	if all(x==None for x in list_field):
+		return x		
+	else:
+		return FILL_RESULT
 
 
 

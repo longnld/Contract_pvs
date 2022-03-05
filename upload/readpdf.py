@@ -1,7 +1,7 @@
 from cgitb import text
 #from turtle import update
 from typing import DefaultDict
-from numpy import fill_diagonal
+#from numpy import fill_diagonal
 import pdfplumber
 import io
 import re

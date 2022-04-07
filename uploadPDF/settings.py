@@ -42,7 +42,10 @@ INSTALLED_APPS = [
     "upload.apps.UploadConfig",
     "email_uploadapi.apps.EmailUploadapiConfig"
 ]
-
+REST_FRAMEWORK = {
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+    ]}
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

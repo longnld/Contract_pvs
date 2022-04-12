@@ -4,5 +4,5 @@ from django.db import models
 class Email_email(models.Model):
     created=models.DateTimeField(auto_now_add=True)
     text_content=models.TextField()
-    attachment_file=models.FileField(null=True)
+    attachment_file=models.FileField(blank=True,null=True)
     

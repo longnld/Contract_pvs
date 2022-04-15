@@ -3,4 +3,4 @@ from .models import Email_email
 class Email_email_Serializer(serializers.ModelSerializer):
     class Meta():
         model=Email_email
-        fields='__all__'
+        fields=['Subject',"Attachments"]

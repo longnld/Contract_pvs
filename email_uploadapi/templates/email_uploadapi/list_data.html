@@ -1,0 +1,50 @@
+
+<html>
+<head>
+    <title>Data display</title>
+    <style>
+        .button1 {
+          box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+        }
+        .header {
+          color: black;
+          border: 2px solid black;
+          margin: 40px;
+          padding: 60px;
+        }
+        table {
+          font-family: arial, sans-serif;
+          width: 100%;
+        }    
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+        a:hover, a:visited, a:link, a:active
+        {
+        text-decoration: none;
+        color: black;
+        }
+        </style>
+</head>
+<body>
+    <h1>List of emails</h1>
+    <div>
+        <table class="table">
+                <tr>
+                    <th>Subject</th>
+                    <th>Attachments</th>
+                </tr>
+    {% for i in list_data %}
+    <tr>
+        <td><strong>{{i.Subject}}</strong></td>
+        <td>{% for attach in i.Attachments.all%}
+            <a href="/media/{{attach}}">{{attach}}<br></a>
+            {%endfor%}
+    </td>
+    </tr>
+    {% endfor %}
+    </div>
+</body>
+</html>

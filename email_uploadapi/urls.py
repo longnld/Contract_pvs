@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import Email_email_View
+from . import views
 urlpatterns = [
-    path('infoemail', Email_email_View.as_view()),
+    path('infoemail', views.create_data),
+    path('list_data', views.getlist_Data),
 ]

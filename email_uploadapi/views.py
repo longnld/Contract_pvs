@@ -3,31 +3,22 @@ from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework import status
+from.models import Email_email,UploadFile
 from .serializers import Email_email_Serializer
+from rest_framework.decorators import api_view
 # Create your views here.   
-def modify_input_for_multiple_files(Subject, Attachments):
-    dict = {}
-    dict['Subject'] = Subject
-    dict['Attachments'] = Attachments
-    return dict
-class Email_email_View(APIView):
-    parser_classes = (MultiPartParser, FormParser)
-    def post(self,request,*args,**kwargs):
-        Subject = request.data.get('Subject')
-        Attachments = dict((request.data).lists())['Attachments']
-        flag = 1
-        arr = []
-        for attachment in Attachments:
-            modified_data = modify_input_for_multiple_files( Subject, attachment)
-            file_serializer = Email_email_Serializer(data=modified_data)
-
-            if file_serializer.is_valid():
-                file_serializer.save()
-                arr.append(file_serializer.data)
-            else:
-                flag = 0
-
-        if flag == 1:
-            return Response(arr, status=status.HTTP_201_CREATED)
-        else:
-            return Response(arr, status=status.HTTP_400_BAD_REQUEST)
+@api_view(['POST'])
+def create_data(request):
+    Subject= request.data['Subject']
+    data_email = Email_email.objects.create(Subject=Subject)
+    for f in request.data.getlist('Attachments'):
+        file = UploadFile.objects.create(file=f)
+        data_email.Attachments.add(file)
+    data_email.save()
+    
+    serializer = Email_email_Serializer(data_email)
+    
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
+def getlist_Data(request):
+    list_data=Email_email.objects.all().order_by("-id")
+    return render(request,'email_uploadapi/list_data.html',{"list_data":list_data})

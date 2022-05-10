@@ -1,10 +1,19 @@
-
-<html>
+{%load static%}
+<html lang="en">
 <head>
+    <meta charset="utf-8">
     <title>Data display</title>
+    <!-- Bootstrap 5 CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <style>
         .button1 {
           box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+
+        }
+        .header h1 {
+          position: relative;
+          top: 18px;
+          left: 10px;
         }
         .header {
           color: black;
@@ -21,30 +30,97 @@
           text-align: left;
           padding: 8px;
         }
-        a:hover, a:visited, a:link, a:active
-        {
-        text-decoration: none;
-        color: black;
-        }
+
         </style>
 </head>
-<body>
-    <h1>List of emails</h1>
-    <div>
-        <table class="table">
-                <tr>
-                    <th>Subject</th>
-                    <th>Attachments</th>
-                </tr>
-    {% for i in list_data %}
-    <tr>
-        <td><strong>{{i.Subject}}</strong></td>
-        <td>{% for attach in i.Attachments.all%}
-            <a href="/media/{{attach}}">{{attach}}<br></a>
-            {%endfor%}
-    </td>
-    </tr>
-    {% endfor %}
+  <body>
+    <div class="header">
+      <h1>Email list</h1>
     </div>
+    <div>
+      <div class="form-group mt-4 mb-3">
+        <label class="sr-only" for="search" style="font-family: arial">Search Subject</label>
+        <input type="text" class="form-control" id="search" aria-describedby="searchHelp" placeholder="Searching Subject" style="width: 20%;background:white;font-family: arial">            
+        </div>  
+<table class="table">            
+                  <thead >
+                    <tr class="header">
+                      <th scope="col">ID</th>
+                      <th scope="col">Subject</th>
+                      <th scope="col">Attachments</th>
+                      <th scope="col">Date to receive</th>
+                      <th scope="col">Date to close</th>
+                      <th scope="col">
+                        <select onchange="getid(this.value)" id="status" class="form-select form-select-sm fw-bold" aria-label="Default select example">
+                          <option>Status</option>
+                          <option value="open"  >Open</option>
+                          <option value="close" >Close</option>
+                          <option value="processing" >Processing</option> 
+                          <option value="pending" >Pending</option>
+                      </th>
+                      <th scope="col">Note</th>
+                    </tr>
+                  </thead>
+                </div>
+    <tbody id="emails_table">
+      
+      {% for i in list_data %}
+      <tr 
+      {% if i.status == "open" %}
+        class="table-danger"
+      {% elif i.status == "processing" %}
+        class="table-warning"
+      {% elif i.status == "close" %}
+        class="table-success"
+      {% endif %}
+        >
+        <td ><a href="update_email/{{i.pk}}"> {{i.pk}}</a></td>
+        <td > {{i.Subject}}</td>
+        <td>{% for attach in i.Attachments.all %}
+            <a href="/media/{{attach}}">{{attach}}<br></a>
+            {%endfor%}</td>
+        <td>{{i.created|date:"d/m/Y"}}</td>
+        <td>{{i.date_to_close|date:"d/m/Y"}}</td>
+        <td >{{i.status}}</td>
+        <td>{{i.note}}</td>
+      </tr>
+      {% endfor %}  
+    </tbody>
+</table>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+      
+      $("#search").keyup(function () {
+        const key_Word = $(this).val();
+      
+        $.ajax({
+          type: "get",
+          url: "{% url 'email_api:search_email_in_hr' %}?key_word=" + key_Word,
+          cache: false,
+          processData: false,
+          contentType: false,
+          success: function (resp) {
+            console.log(resp.data_resp);
+            $("#emails_table").html(`${resp.data_resp}`);
+          },
+          error: function (xhr, status, error) {
+            $("#emails_table").html(`
+                  <div class="alert alert-danger" role="alert">
+                    <h4 class="alert-heading">${status}!</h4>
+                    <p>${error}</p>          
+                  </div>`);
+          }
+        }); // end ajax
+      
+        console.log(key_Word);
+      }); // end search event
+      
+    </script>
+    <script>
+      function getid(pk){
+        alert(pk)
+      }
+    </script>
 </body>
 </html>

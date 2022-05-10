@@ -1,0 +1,150 @@
+{%load static%}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <style>
+        .button1 {
+          box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+        }
+        .header {
+          color: black;
+          border: 2px solid black;
+          margin: 40px;
+          padding: 60px;
+        }
+        table {
+          font-family: arial, sans-serif;
+          width: 100%;
+        }    
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+        a:hover, a:visited, a:link, a:active
+        {
+        text-decoration: none;
+        color: black;
+        }
+        input[type=text] {
+            width: 50%;
+            padding: 12px 30px;
+            margin: 8px 0;
+            box-sizing: border-box;
+          }
+          textarea {
+            width: 100%;
+            height: 150px;
+            padding: 12px 20px;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+            font-size: 16px;
+            resize: none;}
+
+            .button {
+                background-color: white; 
+                border: none;
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+              }
+        </style>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <div class="header" style="width: 80%;">
+    <div class="header" style="font-family: Georgia;margin: 40px 10px">    
+    <h1>{{email.Subject}} Email update</h1>
+    <h2>Email id:{{email.pk}} </h2>
+    </div>
+    <div class="container" style="margin-top: 120px">
+            <div class="row mb-4 mt-5">
+            <div class="col-9">  
+            </div>
+            <div class="col-2">
+                <button class="btn btn-danger" style="width:50%"><a href="{{email.get_email_delete_url}} " id="delete_bt">Delete</a></button>
+            </div>
+        </div>
+        
+        <form action="{% url 'email_api:email_update' email.pk %}" id="email-update-form"  enctype="multipart/form-data" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="Subject">Subject<span class="required-input">*</span></label>
+                <input type="text" class="form-control" id="Subject" placeholder="" name="Subject" value="{{ email.Subject }}">
+                <span id="alert_Subject" style="color: #d9534f;font-size:15px"></span>
+                <small class="form-text text-muted">EmailSubject.</small>
+            </div>
+            <div class="form-group">
+                <label for="status">Status</label>
+                <select class="form-control" name="status" id="status" cols="30" rows="10" placeholder=""style="width:10% " >
+                   
+                    <option value="open" 
+                        {% if email.status == "open" %}
+                            selected
+                        {% endif %}>open</option>
+                    <option value="processing"
+                        {% if email.status == "processing" %}
+                            selected
+                        {% endif %}>processing</option>
+                    <option value="pending"
+                        {% if email.status == "pending" %}
+                            selected
+                        {% endif %}>pending</option>
+                    <option value="close"
+                        {% if email.status == "close" %}
+                            selected
+                        {% endif %}>close</option> 
+                </select>
+                <span id="alert_status" style="color: #d9534f;font-size:15px"></span>
+                <small class="form-text text-muted">EmailStatus.</small>
+            </div> 
+            <div class="form-group">
+                <label for="note">Note</label>
+                <textarea class="form-control" name="note" id="note" cols="20" rows="3" placeholder="email note">{{ email.note }}</textarea>
+                <span id="alert_note" style="style="color: red;font-size:15px";font-size:15px"></span>
+                <small class="form-text text-muted">EmailNote.</small>
+            </div>
+            <button  id="update">Update</button>
+            <button><a href="{% url "email_api:list_data" %}">Back project</a></button>
+        </div>
+        
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $("#update").click(function() {
+        var Subject = $("#Subject").val();
+        var status = $("#status").val();
+        var note = $("#note").val();
+        var valid = true;
+
+        if(Subject ===""){
+          $("#alert_Subject").text("Your input is not valid");
+          valid &= false;
+        } else{
+            $("#alert_Subject").text("");
+        }
+        if(status ===""){
+          $("#alert_status").text("Your input is not valid");
+          valid &= false;
+        } else{
+            $("#alert_status").text("");
+        }
+        $("#alert_status").text("");
+
+        if (valid) {
+            $(this).prop("disabled",true);
+            $("#delete_bt").prop("disabled",true);
+            $("#email-update-form").submit();  
+        }
+
+
+    }); // end click
+
+</script>
+</body>
+</html>

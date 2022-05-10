@@ -1,0 +1,75 @@
+/* Remove default bullets */
+ul, #salary-report, #project-report, #okr-report, #customer-not-paid-report,#recycle-revenue-report {
+    list-style-type: none;
+  }
+  
+  /* Remove margins and padding from the parent ul */
+  #salary-report, #project-report, #vendor-not-paid-report, #customer-not-paid-report , #recycle-revenue-report  {
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Style the caret/arrow */
+  .caret-salary, .caret-project, .caret-okr, .caret-c-not-paid, .caret-recycle-revenue {
+    cursor: pointer;
+    user-select: none; /* Prevent text selection */
+  }
+  
+  /* Create the caret/arrow with a unicode, and style it */
+  .caret-salary::before {
+    content: "\25B6";
+    color: black;
+    display: inline-block;
+    margin-right: 6px;
+  }
+  .caret-project::before {
+    content: "\25B6";
+    color: black;
+    display: inline-block;
+    margin-right: 6px;
+  }
+  .caret-okr::before {
+    content: "\25B6";
+    color: black;
+    display: inline-block;
+    margin-right: 6px;
+  }
+  .caret-c-not-paid::before {
+    content: "\25B6";
+    color: black;
+    display: inline-block;
+    margin-right: 6px;
+  }
+  .caret-recycle-revenue::before {
+    content: "\25B6";
+    color: black;
+    display: inline-block;
+    margin-right: 6px;
+  }
+  
+  /* Rotate the caret/arrow icon when clicked on (using JavaScript) */
+  .caret-salary-down::before {
+    transform: rotate(90deg);
+  }
+  .caret-project-down::before {
+    transform: rotate(90deg);
+  }
+  .caret-okr-down::before {
+    transform: rotate(90deg);
+  }
+  .caret-down-c-not-paid::before {
+    transform: rotate(90deg);
+  }
+  .caret-recycle-revenue-down::before {
+    transform: rotate(90deg);
+  }
+  
+  /* Hide the nested list */
+  .nested-salary, .nested-project, .nested-okr, .nested-c-not-paid, .nested-recycle-revenue {
+    display: none;
+  }
+  
+  /* Show the nested list when the user clicks on the caret/arrow (with JavaScript) */
+  .active-salary, .active-project, .active-okr, .active-c-not-paid, .active-recycle-revenue {
+    display: block;
+  }

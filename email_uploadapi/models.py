@@ -1,5 +1,6 @@
+from email.policy import default
 from django.db import models
-
+from django.urls import reverse
 # Create your models here.
 
 class UploadFile(models.Model):
@@ -8,6 +9,22 @@ class UploadFile(models.Model):
 		return "{}".format(self.file)
 	
 class Email_email(models.Model):
-	created=models.DateTimeField(auto_now_add=True)
+	CHOICES = [
+    ('OPEN', 'open'),
+    ('PROCESSING', 'processing'),
+    ('PENDING', 'pending'),
+    ('CLOSE', 'close'),
+]
+	created=models.DateTimeField(null=True,blank=True)
 	Subject=models.TextField()
 	Attachments=models.ManyToManyField(UploadFile,blank=True) 
+	note=models.TextField(null=True,blank=True)
+	date_to_close=models.DateTimeField(null=True,blank=True)
+	status=models.CharField( max_length=20,choices=CHOICES,default="OPEN")
+	def __str__(self):
+		return "{}".format(self.Subject)
+	
+	def get_email_delete_url(self):
+		return reverse("email_api:email_delete",kwargs={"pk":self.pk})
+
+

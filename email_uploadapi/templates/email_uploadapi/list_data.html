@@ -64,7 +64,7 @@
                 </div>
     <tbody id="emails_table">
       
-      {% for i in list_data %}
+      {% for i in list_email %}
       <tr 
       {% if i.status == "open" %}
         class="table-danger"
@@ -93,7 +93,7 @@
       
       $("#search").keyup(function () {
         const key_Word = $(this).val();
-      
+        var url = "{% url 'email_api:list_data' %}";
         $.ajax({
           type: "get",
           url: "{% url 'email_api:search_email_in_hr' %}?key_word=" + key_Word,
@@ -101,7 +101,7 @@
           processData: false,
           contentType: false,
           success: function (resp) {
-            console.log(resp.data_resp);
+            console.log(resp.data_resp);          
             $("#emails_table").html(`${resp.data_resp}`);
           },
           error: function (xhr, status, error) {
@@ -110,7 +110,7 @@
                     <h4 class="alert-heading">${status}!</h4>
                     <p>${error}</p>          
                   </div>`);
-          }
+          }       
         }); // end ajax
       
         console.log(key_Word);

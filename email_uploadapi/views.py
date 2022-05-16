@@ -20,17 +20,28 @@ def create_data(request):
         file = UploadFile.objects.create(file=f)
         data_email.Attachments.add(file)
     data_email.created=datetime.datetime.now()
+    print(data_email.created)
     data_email.save()
     
     serializer = Email_email_Serializer(data_email)
     
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 def getlist_Data(request):
-    list_data=Email_email.objects.all().order_by("-id")
-    return render(request,'email_uploadapi/list_data.html',{"list_data":list_data})
+    if request.GET.get("EmailId",None):
+        EmailId=int(request.GET.get("EmailId"))
+        list_email=Email_email.objects.filter(Q(pk=EmailId))
+    else:
+        list_email=Email_email.objects.all().order_by("-id")
+    if request.GET.get("EmailStatus",None):
+        EmailStatus=request.GET.get("EmailStatus")
+        list_email=list_email.filter(Q(status=EmailStatus))
+    print(request.GET.get("EmailId",None))
+    print(request.GET.get("status",None))    
+    
+    return render(request,'email_uploadapi/list_data.html',{"list_email":list_email,"EmailId":request.GET.get("EmailId",None),"EmailStatus":request.GET.get("EmailStatus",None)})
 @api_view(["GET"])
 def search_email_in_hr(request):
-    menu_email= "true"
+
     if request.method == "GET":
         key_word = request.GET.get("key_word")
         if key_word:
@@ -80,6 +91,8 @@ def search_email_in_hr(request):
                 if Subject.date_to_close:
                     raw_time=str(Subject.date_to_close.date())
                     time=raw_time[8:10]+"/"+raw_time[5:7]+"/"+raw_time[0:4] #date/month/year
+
+                    print(time)
                     data_resp+= '''<td>{}</td>'''.format(time)
                 else:
                     data_resp+='''<td></td>'''
@@ -97,10 +110,9 @@ def email_update(request,pk):
             email.status=form.cleaned_data['status']
             email.Subject=form.cleaned_data['Subject']
             email.note=form.cleaned_data['note']
-            if email.status =='close':
-                
-                email.date_to_close=datetime.datetime.now().strftime("%Y-%d-%m %H:%M:%S")
-                print(email.date_to_close)
+            if email.status =='close':               
+                email.date_to_close=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                print("date"+str(email.date_to_close))
             email.save()
     return render(request,"email_uploadapi/email_update.html",{"email":email})
 

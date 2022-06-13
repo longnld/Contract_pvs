@@ -99,7 +99,19 @@
             {%endfor%}</td>
         <td>{{i.created|date:"d/m/Y"}}</td>
         <td>{{i.date_to_close|date:"d/m/Y"}}</td>
-        <td >{{i.status}}</td>
+        <td >                <span
+          {% if i.status == "open" %}
+              class="badge badge-pill badge-danger"
+          {% elif i.status == "processing" %}
+              class="badge badge-pill badge-primary "
+          {% elif i.status == "close" %}
+              class="badge badge-pill badge-success"
+          {% elif i.status == "pending" %}
+              class="badge badge-pill badge-warning"
+          {% elif i.status == "open" %}
+              class="badge badge-pill badge-info"
+          {% endif %}>{{i.status}}</span>
+</td>
         <td><a  class="btn btn-link btn-rounded btn-sm fw-bold" href="update_email/{{i.pk}}" style="text-decoration: none;">Edit</a></td>
       </tr>
       {% endfor %}  

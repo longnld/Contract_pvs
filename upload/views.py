@@ -5,7 +5,8 @@ from upload.forms import DocumentForm
 import io
 import pdfplumber
 from .readpdf import read
-
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 def home(request):
 
     return render(request, 'upload/home.html')
@@ -15,8 +16,9 @@ def model_form_upload(request):
 		form=DocumentForm(request.POST,request.FILES)
 		if form.is_valid():
 			file=request.FILES.get('document')
+			print(file)
 			lists=read(file)
-			print(type(lists))
+			print(file)
 			if type(lists)==dict:
 				return render(request, 'upload/model_form_upload.html', {'lists':lists})
 			else:
@@ -24,3 +26,10 @@ def model_form_upload(request):
 	else:
 		form=DocumentForm()
 	return render(request,'upload/model_form_upload.html',{'form':form})
+@api_view(["GET"])
+def PDFreading_api(request):
+	if request.method == "GET":	
+		print(request.GET.get('file'))	
+		lists=read(filename=request.GET.get('file'))
+		print(lists)
+	return Response({"lists":lists})

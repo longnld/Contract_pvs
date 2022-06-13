@@ -7,4 +7,6 @@ urlpatterns = [
     path('search_email_in_hr',views.search_email_in_hr,name="search_email_in_hr"),
     path('update_email/<int:pk>',views.email_update,name="email_update"),
     path('email_delete/<int:pk>',views.email_delete,name="email_delete"),
+    path("new",views.home2),
+    path("filter_status",views.filter_status,name="filter_status")
 ]

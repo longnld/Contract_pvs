@@ -11,7 +11,10 @@ import datetime
 from django.db.models import Q
 from.forms import EmailFormUpdate
 from django.utils import timezone
-# Create your views here.   
+# Create your views here.
+def index(request):
+    return render(request,"index.html")
+  
 @api_view(['POST'])
 def create_data(request):
     Subject= request.data['Subject']
@@ -97,10 +100,7 @@ def search_email_in_hr(request):
                 else:
                     data_resp+='''<td></td>'''
                 data_resp+=f'''<td >{Subject.status}</td>'''
-                if Subject.note:
-                    data_resp+=f'''<td>{Subject.note}</td></tr>'''
-                else:
-                    data_resp+='''<td></td></tr>'''
+                data_resp+='''<td></td></tr>'''
         return Response({"data_resp":data_resp})
 def email_update(request,pk):
     email=Email_email.objects.get(pk=pk)
@@ -124,3 +124,66 @@ def email_delete(request,pk):
     except Email_email.DoesNotExist:
         email_delete_object=None
     return redirect("email_api:list_data")
+def home2(request):
+    return render(request,"email_uploadapi/new.html")
+@api_view(["GET"])
+def filter_status(request):
+    if request.method == "GET":
+        status = request.GET.get("status")
+        print(status)
+        if status:
+            Subjects = Email_email.objects.filter(Q(status=status))
+        else:
+            Subjects = Email_email.objects.all().order_by('-id')
+        print(Subjects)
+        data_resp = ""
+        
+        for Subject in Subjects:
+                if Subject.status=="close":
+                    data_resp += f'''<tr class="table-success">
+                                    <td ><a href="update_email/{Subject.pk}"> {Subject.pk}</a></td>
+                                    <td > {Subject.Subject}</td>
+                                    <td>
+
+                                    '''
+                elif Subject.status=="processing":
+                    data_resp += f'''<tr class="table-warning">
+                                    <td ><a href="update_email/{Subject.pk}"> {Subject.pk}</a></td>
+                                    <td > {Subject.Subject}</td>
+                                    <td>
+
+                                    '''
+                elif Subject.status=="open":
+                    data_resp += f'''<tr class="table-danger">
+                                    <<td ><a href="update_email/{Subject.pk}"> {Subject.pk}</a></td>
+                                    <td > {Subject.Subject}</td>
+                                    <td>
+
+                                    '''
+                else:
+                    data_resp += f'''<tr>
+                                    <td ><a href="update_email/{Subject.pk}"> {Subject.pk}</a></td>
+                                    <td > {Subject.Subject}</td>
+                                    <td>
+                                    '''
+                for attach in Subject.Attachments.all():
+                    data_resp +=f'''<a href="/media/{attach}">{attach}</a><br>'''
+                
+                if Subject.created:
+                    raw_time=str(Subject.created.date())
+                    time=raw_time[8:10]+"/"+raw_time[5:7]+"/"+raw_time[0:4] #date/month/year
+                    data_resp+= '''</td><td>{}</td>'''.format(time)
+                    #data_resp+= '''</td><td>{}</td></tr>'''.format(datetime.datetime.strptime(str(Subject.created),"%d/%m/%Y %H %I"))
+                else:
+                    data_resp+='''<td></td>'''
+                if Subject.date_to_close:
+                    raw_time=str(Subject.date_to_close.date())
+                    time=raw_time[8:10]+"/"+raw_time[5:7]+"/"+raw_time[0:4] #date/month/year
+
+                    print(time)
+                    data_resp+= '''<td>{}</td>'''.format(time)
+                else:
+                    data_resp+='''<td></td>'''
+                data_resp+=f'''<td >{Subject.status}</td>'''
+                data_resp+='''<td></td></tr>'''
+        return Response({"data_resp":data_resp})

@@ -20,11 +20,10 @@ class Email_email(models.Model):
 	Attachments=models.ManyToManyField(UploadFile,blank=True) 
 	note=models.TextField(null=True,blank=True)
 	date_to_close=models.DateTimeField(null=True,blank=True)
-	status=models.CharField( max_length=20,choices=CHOICES,default="OPEN")
+	status=models.CharField( max_length=20,choices=CHOICES,default="open")
 	def __str__(self):
 		return "{}".format(self.Subject)
 	
 	def get_email_delete_url(self):
 		return reverse("email_api:email_delete",kwargs={"pk":self.pk})
-
 

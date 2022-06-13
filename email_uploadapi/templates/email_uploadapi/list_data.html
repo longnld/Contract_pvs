@@ -83,8 +83,8 @@
         >
         <td > {{i.pk}}</td>
         <td > 
-          <strong class="fw-normal mb-1" style="font-size:20px"> {{i.Subject}}</strong>
-          <p class="text-muted mb-0" style=" width: 50px;text-overflow: ellipsis;overflow: hidden;"><strong>Note:</strong>{{i.note|truncatewords:8}}</p></td>
+          <strong class="fw-normal mb-1" style="font-size:20px"> {{i.Subject|truncatechars:30}}</strong>
+          <p class="text-muted mb-0" style=" width: 100px;text-overflow: ellipsis;overflow: hidden;"><strong>Note:</strong>{{i.note|truncatewords:8}}</p></td>
         <td>{% for attach in i.Attachments.all %}
             <a href="/media/{{attach}}" style="text-decoration: none;">{{attach|truncatechars:10}}</a>    
             {%if attach|extensiontags == "pdf"%}   

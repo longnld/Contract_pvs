@@ -37,10 +37,11 @@ def getlist_Data(request):
     if request.GET.get("EmailStatus",None):
         EmailStatus=request.GET.get("EmailStatus")
         list_email=list_email.filter(Q(status=EmailStatus))
+    count=len(list_email)
     print(request.GET.get("EmailId",None))
     print(request.GET.get("status",None))    
     
-    return render(request,'email_uploadapi/list_data.html',{"list_email":list_email,"EmailId":request.GET.get("EmailId",None),"EmailStatus":request.GET.get("EmailStatus",None)})
+    return render(request,'email_uploadapi/list_data.html',{"list_email":list_email,"EmailId":request.GET.get("EmailId",None),"EmailStatus":request.GET.get("EmailStatus",None),"count":count})
 # @api_view(["GET"])
 # def search_email_in_hr(request):
 
@@ -111,7 +112,10 @@ def email_update(request,pk):
             email.note=form.cleaned_data['note']
             if email.status =='close':               
                 email.date_to_close=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                print("date"+str(email.date_to_close))
+                print("close")
+            else :
+                email.date_to_close=None
+                print(email.status)
             email.save()
     return render(request,"email_uploadapi/email_update.html",{"email":email})
 

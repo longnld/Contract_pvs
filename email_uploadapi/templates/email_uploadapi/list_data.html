@@ -5,35 +5,31 @@
     <meta charset="utf-8">
     <title>Data display</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
     <!-- Bootstrap 5 CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-    <!-- Import bootstrap cdn -->
-    <link rel="stylesheet" href=
-"https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-        integrity=
-"sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
-        crossorigin="anonymous">
-  
     <!-- Import jquery cdn -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity=
-"sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous">
-    </script>
-      
-    <script src=
-"https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-        integrity=
-"sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
-        crossorigin="anonymous">
-    </script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
     <style>
       .modal-dialog {
         width: auto;
         max-width: 960px;
         word-wrap: break-word;
       }
+      .body {
+        padding: 3%;
+      }
+      .table.dataTable thead .sorting:before, table.dataTable thead .sorting_asc:before, table.dataTable thead .sorting_desc:before, table.dataTable thead .sorting_asc_disabled:before, table.dataTable thead .sorting_desc_disabled:before {
+        right: 1em;
+        content: "\02C6" !important;
+    }
+    
+    .table.dataTable thead .sorting:after, table.dataTable thead .sorting_asc:after, table.dataTable thead .sorting_desc:after, table.dataTable thead .sorting_asc_disabled:after, table.dataTable thead .sorting_desc_disabled:after {
+        right: 0.5em;
+        content: "\02C7" !important;
+    }
+      
     </style>
 </head>
   <body>
@@ -41,22 +37,22 @@
   <nav class="navbar navbar-light bg-light">
     <img src="{% static 'img/logo_PVS_Hub_v4.png'%}" width="30" height="30" class="d-inline-block align-top" alt="None">
     <a class="navbar-brand" href="{% url "email_api:list_data" %}"style="font-family:verdana" >Emails Display</a>
-   <a class="navbar-brand"  href="{% url "index" %}" style="font-family:verdana">HOME</a>
-   <form class="form-inline my-2 my-lg-0">
-    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for subjects..">
-  </form>
-</nav>
-
-<table class="table" table class="table align-middle mb-0 bg-white">            
+    <a class="navbar-brand"  href="{% url "index" %}" style="font-family:verdana">HOME</a>
+    <button type="button" class="btn btn-primary">
+      Notifications <span class="badge text-bg-secondary">{{list_email.length}}</span>
+    </button>
+  </nav>
+<div>
+<table class="table table-striped table-bordered table-sm" id="overall-table" class="table align-middle mb-0 bg-white">            
                   <thead class="bg-light">
                     <tr class="header">
-                      <th scope="col">ID</th>
+                      <th scope="col" class="th-sm">ID</th>
                       <th scope="col">Subject</th>
                       <th scope="col">Attachments</th>
                       <th scope="col">Date to receive</th>
                       <th scope="col">Date to close</th>
                       <th scope="col">
-                        <select onchange="getid(this.value)" id="status" class="form-select form-select-sm fw-bold" aria-label="Default select example">
+                        <select  onchange="getid(this)" id="status" class="form-select form-select-sm fw-bold" aria-label="Default select example">
                           <option>Status</option>
                           <option value="open"  >Open</option>
                           <option value="close" >Close</option>
@@ -66,7 +62,6 @@
                       <th scope="col" >Action</th>
                     </tr>
                   </thead>
-                </div>
     <tbody id="emails_table">
       
       {% for i in list_email %}
@@ -80,11 +75,11 @@
       {% elif i.status == "pending" %}
         class="table-warning"
       {% endif %} 
-        >
+      id="{{ i.pk }}"  >
         <td > {{i.pk}}</td>
         <td > 
-          <strong class="fw-normal mb-1" style="font-size:20px"> {{i.Subject|truncatechars:30}}</strong>
-          <p class="text-muted mb-0" style=" width: 100px;text-overflow: ellipsis;overflow: hidden;"><strong>Note:</strong>{{i.note|truncatewords:8}}</p></td>
+          <p class="fw-normal mb-1" style="font-size:20px"> {{i.Subject|truncatechars:30}}</p>
+          <span class="text-muted mb-0" style=" width: 100px;text-overflow: ellipsis;overflow: hidden;"><strong>Note:</strong>{{i.note|truncatechars:30}}</span></td>
         <td>{% for attach in i.Attachments.all %}
             <a href="/media/{{attach}}" style="text-decoration: none;">{{attach|truncatechars:10}}</a>    
             {%if attach|extensiontags == "pdf"%}   
@@ -101,24 +96,31 @@
         <td>{{i.date_to_close|date:"d/m/Y"}}</td>
         <td >                <span
           {% if i.status == "open" %}
-              class="badge badge-pill badge-danger"
+              class="badge text-bg-danger"
           {% elif i.status == "processing" %}
-              class="badge badge-pill badge-primary "
+              class="badge text-bg-primary "
           {% elif i.status == "close" %}
-              class="badge badge-pill badge-success"
+              class="badge text-bg-success"
           {% elif i.status == "pending" %}
-              class="badge badge-pill badge-warning"
+              class="badge text-bg-warning"
           {% elif i.status == "open" %}
-              class="badge badge-pill badge-info"
-          {% endif %}>{{i.status}}</span>
-</td>
+              class="badge text-bg-info"
+          {% endif %} value="{{i.status}}">{{i.status}}</span></td>
         <td><a  class="btn btn-link btn-rounded btn-sm fw-bold" href="update_email/{{i.pk}}" style="text-decoration: none;">Edit</a></td>
       </tr>
       {% endfor %}  
     </tbody>
+    <th scope="col">ID</th>
+                      <th scope="col">Subject</th>
+                      <th scope="col">Attachments</th>
+                      <th scope="col">Date to receive</th>
+                      <th scope="col">Date to close</th>
+                      <th scope="col">status</th>
+                      <th scope="col" >Action</th>
+    <tfooter>
+    </tfooter>
 </table>
 </div>
-    </div>
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" 
     tabindex="-1" 
@@ -149,7 +151,6 @@
                     in this part of the 
                     modal body -->
                 <h6 id="modal_body"></h6>
-
                 <h6 id="modal_body8"></h6>   
                 <h6 id="modal_body9"></h6>
                 <h6 id="modal_body10"></h6>
@@ -162,8 +163,6 @@
                 <h6 id="modal_body17"></h6>
                 <h6 id="modal_body18"></h6>
                 <h6 id="modal_body19"></h6>
-
-
                 <button type="button" 
                     class="btn btn-success btn-sm" 
                     data-toggle="modal"
@@ -176,6 +175,16 @@
     </div>
 </div>
 </div>
+</div>
+</div>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+  integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+  crossorigin="anonymous">
+  </script>     
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+  crossorigin="anonymous">
+  </script>
   <script>
     function getid2(id){
       $.ajax({
@@ -252,9 +261,13 @@
     }
 
   </script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-    <script>
+  <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+  <!-- Popper.js -->
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+  <!-- dataTable -->
+  <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
+    <script>      
       function myFunction() {
         // Declare variables
         var input, filter, table, tr, td, i, txtValue;
@@ -275,30 +288,47 @@
             }
           }
         }
+        console.log("keyup",filter)
       }
       </script>
-      <script>
-        function getid(pk) {
-          $.ajax({
-            type: 'get',
-            url: "{% url 'email_api:filter_status' %}?status=" + pk,
-            processData: false,
-            contentType: false,
-            cache: false,
-            success: function(resp) {
-              console.log(resp.data_resp);          
-              $("#emails_table").html(`${resp.data_resp}`);
-            },
-          }); // end ajax 
+    <script>
+      function getid(sel){
+        var input, filter;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        statusOption=sel.options[sel.selectedIndex].value
+        table = document.getElementById("emails_table");
+        tr = table.getElementsByTagName("tr");
+            if(statusOption.toLowerCase()=="status"){ 
+              for (i = 0; i < tr.length; i++){ 
+                  tr[i].style.display = "";}
+              }
+            else{
+            if(filter==""){
+            for (i = 0; i < tr.length; i++) {  
+              td = tr[i].getElementsByTagName("td")[5].getElementsByTagName("span")[0].getAttribute("value");
+              if (td==statusOption.toLowerCase()){ tr[i].style.display = "";}
+              else{ tr[i].style.display = "none";} 
+            }
+            }
+            el
+            console.log("filter",statusOption.toLowerCase())
+          }  
         }
-      </script>
-      <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand" href="{% url "email_api:list_data" %}"style="font-family:verdana" ><img src="{% static 'img/logo_PVS_Hub_v4.png'%}" width="30" height="30" class="d-inline-block align-top" alt="None">
-        Emails Display</a>
-       <a class="navbar-brand"  href="{% url "index" %}" style="font-family:verdana">HOME</a>
-       <form class="form-inline my-2 my-lg-0">
-        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for subjects..">
-      </form>
-    </nav>
+    </script>
+    <script>
+      $(document).ready(function () {
+        $('#overall-table').DataTable({
+          scrollY: 500,
+          "aaSorting": [],
+          columnDefs: [{
+          orderable: false,
+          targets: [1,2,3,4,5,6]
+          }]
+        });
+          $('.dataTables_length').addClass('bs-select');
+      });
+    </script>
+
 </body>
 </html>

@@ -18,12 +18,13 @@ from django.contrib import admin
 from django.urls import path , include
 from django.conf import settings
 from django.conf.urls.static import static
-from email_uploadapi.views import index
+from user.views import index
 urlpatterns = [
     path('admin/', admin.site.urls),    
     path(r'uploadpdf/',include('upload.urls',namespace="pdf_upload")),
     path(r'email_api/',include('email_uploadapi.urls',namespace="email_api")),
-    path('',index,name="index")
+    path('',index,name="index"),
+    path(r"user/",include('user.urls',namespace="user")),
 ]
 if settings.DEBUG:
   urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

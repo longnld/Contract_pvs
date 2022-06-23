@@ -3,8 +3,9 @@
 {% block content %}
   <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
   <div class="btn-group mr-2" role="group" aria-label="First group">
-    <a href="{% url 'model_form_upload' %}" ><button type="button" class="btn btn-secondary" style="background:grey;padding:20px 60px">Upload</button></a>
+    <a href="{% url 'pdf_upload:model_form_upload' %}" ><button type="button" class="btn btn-secondary" style="background:grey;padding:20px 60px;margin-right: 10px">PDF Upload</button></a>
+    <a href="{% url 'index' %}" ><button type="button" class="btn btn-secondary" style="background:grey;padding:20px 60px;margin-right: 10px;">Go Back</button></a>
   </div>
-
+  
 
 {% endblock %}

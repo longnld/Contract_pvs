@@ -37,13 +37,15 @@ def getlist_Data(request):
         status=request.GET.get("status",None)
         list_email=list_email.filter(Q(status=status))
     if request.GET.get("datereceive",None):
-        datereceive=request.GET.get("datereceive",None)
-        list_email=list_email.filter(Q(created__date=datereceive))
+        if(request.GET.get("datereceive",None)!="Datetoreceive"):
+            print("datereceive value:"+ request.GET.get("datereceive",None)  )
+            datereceive=request.GET.get("datereceive",None)
+            list_email=list_email.filter(Q(created__date=datereceive))
     count=0
-    for i in range(len(list_email)):
-        if list_email[i].date_to_close==None:
+    allEmail=Email_email.objects.all()
+    for i in range(len(allEmail)):
+        if allEmail[i].date_to_close==None:
             count=count+1
-            print(list_email[i])
     return render(request,'email_uploadapi/list_data.html',{"list_email":list_email,"count":count,"datereceive":request.GET.get("datereceive",None),"status":request.GET.get("status",None),"key_word":request.GET.get("key_word","")})
 def email_update(request,pk):
     email=Email_email.objects.get(pk=pk)

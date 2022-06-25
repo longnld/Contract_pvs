@@ -1,7 +1,9 @@
-{% extends 'base.html' %}
+{% extends 'upload/home.html' %}
 
-{% block content %}
-<div style="width: 90%"">
+
+{% block content1 %}
+<hr style="margin:2em">  
+<div >
   <table >
       <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
@@ -15,7 +17,7 @@
           </div>
         </div>
       </form>
-
+<br style="margin:2em">
 <table class="table">
   {% if lists %}
   

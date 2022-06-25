@@ -4,68 +4,49 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     <style>
         .GFG {
             background-color: #DC143C;
             color: white;
-            padding: 5px 10px;
-            text-align: center;
-            display: inline-block;
-            font-size: 20px;
-            margin: 10px 30px;
-            cursor: pointer;
-            text-decoration:none;
+            padding: 10px 40px;
         }
     </style>
 </head>
 <body style="background-color:smoke">
+    <nav class="navbar navbar-dark bg-dark">
+        <a href="{% url 'index' %}" class="logo me-auto me-lg-0"><img src="{% static 'img/logo_PVS_Hub_width-white.png' %}" width="100" height="30" style="margin-left:30"alt="" class="img-fluid"></a>
+  
+        </div>
+    </nav>
     <div class="container bootstrap snippets bootdey" style="justify-content: center">
         <h1  style="color: black;">Edit Email</h1>
           <hr>
-          <!-- detail -->
-          <details align="left">
-              <summary><strong>Details</strong></summary>
-                <strong>ID :</strong> {{email.id}}<br><hr>
-                <strong>Subject :</strong> {{email.Subject}}<br><hr>
-                <ul><strong>Attachments :</strong></ul> {% for attach in email.Attachments.all%}
-                                                    <li><a href="/media/{{attach}}">{{attach}}</a></li><br>
-                                                {%endfor%}<hr>
-                <strong>Note :</strong> {{email.note}}<hr>
-                <strong>Status :</strong> 
-                <span
-                {% if email.status == "open" %}
-                    class="badge badge-pill badge-danger"
-                {% elif email.status == "processing" %}
-                    class="badge badge-pill badge-primary "
-                {% elif email.status == "close" %}
-                    class="badge badge-pill badge-success"
-                {% elif email.status == "pending" %}
-                    class="badge badge-pill badge-warning"
-                {% elif email.status == "open" %}
-                    class="badge badge-pill badge-info"
-                {% endif %}>{{email.status}}</span>
-
-          </details>
-          <hr>
+          <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">Details</button>
+            <button type="button" id="update" class="btn btn-secondary">Update</button>
+            <button type="button" class="btn btn-secondary"><a href="{% url "email_api:list_data" %}" style="color:white;text-decoration:none" >Back project</a></button>
+            <button type="button"  class="btn btn-danger"> <a href="{{email.get_email_delete_url}} " id="delete_bt" class="GFG" style="display:inline-block"><span class="material-symbols-outlined">Delete</span></a></button>
           </div>
-    <div class="container" style="margin-top: 30px">
+          </div>
+    <div class="container" style="margin-top: 10px">
             <div class="row mb-4 mt-5">
             <div class="col-9">     
             </div>
         </div>
         
-        <form action="{% url 'email_api:email_update' email.pk %}" id="email-update-form"  enctype="multipart/form-data" method="post">
+        <form action="{% url 'email_api:email_update' email.pk %}" id="email-update-form"  enctype="multipart/form-data" method="post" style="  border-style:groove" class="row g-3">
             {% csrf_token %}
-            <div class="form-group">
-                <label for="Subject">Subject<span class="required-input">*</span></label>
+            <div class="col-md-6">
+                <label for="Subject" class="form-label" >Subject<span class="required-input"></span></label>
                 <input type="text" class="form-control" id="Subject" placeholder="" name="Subject" value="{{ email.Subject }}">
                 <span id="alert_Subject" style="color: #d9534f;font-size:15px"></span>
-                <small class="form-text text-muted">EmailSubject.</small>
             </div>
-            <div class="form-group">
-                <label for="status">Status</label>
-                <select class="form-control" name="status" id="status" cols="30" rows="10" placeholder=""style="width:40% " >
+            <div class="col-md-4">
+                <label for="status" class="form-label">Status</label>
+                <select class="form-select" name="status" id="status"  >
                    
                     <option value="open" 
                         {% if email.status == "open" %}
@@ -85,18 +66,53 @@
                         {% endif %} style="font-family:verdana">close</option> 
                 </select>
                 <span id="alert_status" style="color: #d9534f;font-size:15px"></span>
-                <small class="form-text text-muted">EmailStatus.</small>
             </div> 
-            <div class="form-group">
-                <label for="note">Note</label>
+            <br>    
+            <div v class="input-group">
+                <span class="input-group-text">Note</span>
                 <textarea class="form-control" name="note" id="note" cols="20" rows="4" placeholder="email note">{{ email.note }}</textarea>
-                <span id="alert_note" style="style="color: red;font-size:15px";font-size:15px"></span>
-                <small class="form-text text-muted">EmailNote.</small>
             </div>
-            <button  id="update">Update</button>
-            <button ><a href="{% url "email_api:list_data" %}" style="color:black">Back project</a></button><hr>
-            <a href="{{email.get_email_delete_url}} " id="delete_bt" class="GFG" >Delete</a>
-        
+
+            
+           <!--Modal-->   
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Details</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <strong>ID :</strong> {{email.id}}<br><hr style="margin:0em">
+                        <strong>Subject :</strong> {{email.Subject}}<br><hr style="margin:0em">
+                        <ul><strong>Attachments :</strong></ul> {% for attach in email.Attachments.all%}
+                                                            <li><a href="/media/{{attach}}">{{attach}}</a></li><br>
+                                                        {%endfor%}<hr style="margin:0em">
+                        <strong>Note :</strong> {{email.note}}<hr style="margin:0em">
+                        <strong>Status :</strong> 
+                        <span
+                        {% if email.status == "open" %}
+                            class="badge text-bg-danger"
+                        {% elif email.status == "processing" %}
+                            class="badge text-bg-primary "
+                        {% elif email.status == "close" %}
+                            class="badge text-bg-success"
+                        {% elif email.status == "pending" %}
+                            class="badge text-bg-warning"
+                        {% elif email.status == "open" %}
+                            class="badge text-bg-info"
+                        {% endif %}>{{email.status}}</span><hr style="margin:0em">
+                        <strong>Date receive:</strong>{{email.created}}<hr style="margin:0em">
+                        <strong>Date to close:</strong>{{email.date_to_close}}
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>            
+              <!--endModal--> 
+                  
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
     $("#update").click(function() {
@@ -124,8 +140,6 @@
             $("#delete_bt").prop("disabled",true);
             $("#email-update-form").submit();  
         }
-
-
     }); // end click
 
 </script>

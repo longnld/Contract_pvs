@@ -147,16 +147,15 @@
           <p class="fw-normal mb-1" style="font-size:20px;width:200px"> {{i.Subject|truncatechars:30}}</p>
           <span class="text-muted mb-0" style=" width: 100px;text-overflow: ellipsis;overflow: hidden;"><strong>Note:</strong>{{i.note|truncatechars:30|truncatewords:12}}</span></td>
         <td>{% for attach in i.Attachments.all %}
-          <div>
             <a href="/media/{{attach}}" style="text-decoration: none;">{{attach|truncatechars:20}}</a>    
             {%if attach|extensiontags == "pdf"%}   
             <span  type="button"  data-toggle="modal" 
               data-target="#exampleModal"
               id="media/{{attach}}"
               onclick="getid2(this.id)"
-              style="display: inline;float:right"class="material-symbols-outlined">task</span>   
+              style="float:right"class="material-symbols-outlined">task</span>   
+              <hr style="margin:0em">
             {%endif%}<br>
-          </div>
             {%endfor%}</td>
         <td value="{{i.created|date:"d/m/Y"}}">{{i.created|date:"d/m/Y"}}</td>
         <td>{{i.date_to_close|date:"d/m/Y"}}</td>

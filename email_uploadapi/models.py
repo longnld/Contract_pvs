@@ -1,4 +1,5 @@
 from email.policy import default
+from pyexpat import model
 from django.db import models
 from django.urls import reverse
 # Create your models here.
@@ -15,6 +16,7 @@ class Email_email(models.Model):
     ('PENDING', 'pending'),
     ('CLOSE', 'close'),
 ]
+	sender=models.EmailField(max_length = 254,null=True)
 	created=models.DateTimeField(null=True,blank=True)
 	Subject=models.TextField()
 	Attachments=models.ManyToManyField(UploadFile,blank=True) 

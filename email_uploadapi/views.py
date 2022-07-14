@@ -20,10 +20,9 @@ def create_data(request):
     for f in request.data.getlist('Attachments'):
         file = UploadFile.objects.create(file=f)
         data_email.Attachments.add(file)
+    data_email.sender=request.data['sender']
     data_email.created=datetime.datetime.now()
-    print("date email created",data_email.created)
     data_email.save()
-    
     serializer = Email_email_Serializer(data_email)
     
     return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -46,7 +45,7 @@ def getlist_Data(request):
     for i in range(len(allEmail)):
         if allEmail[i].date_to_close==None:
             count=count+1
-    return render(request,'email_uploadapi/list_data.html',{"list_email":list_email,"count":count,"datereceive":request.GET.get("datereceive",None),"status":request.GET.get("status",None),"key_word":request.GET.get("key_word","")})
+    return render(request,'email_uploadapi/list_data.html',{"allEmail":allEmail,"list_email":list_email,"count":count,"datereceive":request.GET.get("datereceive",None),"status":request.GET.get("status",None),"key_word":request.GET.get("key_word","")})
 def email_update(request,pk):
     email=Email_email.objects.get(pk=pk)
     if request.method == "POST":

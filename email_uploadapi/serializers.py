@@ -9,4 +9,4 @@ class Email_email_Serializer(serializers.ModelSerializer):
     Attachments = UploadSerializers(many=True, read_only=True)
     class Meta():
         model=Email_email
-        fields=("Subject","Attachments")
+        fields=("Subject","Attachments","sender")

@@ -105,7 +105,7 @@
                     <tr class="header">
 
                       <th scope="col" class="th-sm">ID</th>
-                      <th scope="col" class="th-sm">Sender</th>
+                      <th scope="col" >Sender</th>
                       <th scope="col">Subject</th>
                       <th scope="col">Attachments</th>
                       <th scope="col">
@@ -132,10 +132,10 @@
       {% endif %} 
       id="{{ i.pk }}"  >
         <td  data-title="ID"> {{i.pk}}</td>
-        <td>{{i.sender}}</td>
-        <td > 
-          <p class="fw-normal mb-1" style="font-size:20px;width:200px"> {{i.Subject|truncatechars:30}}</p>
-          <span class="text-muted mb-0" style=" width: 100px;text-overflow: ellipsis;overflow: hidden;"><strong>Note:</strong>{{i.note|truncatechars:30|truncatewords:12}}</span></td>
+        <td style="width:9%">{{i.sender}}</td>
+        <td  style="width:25%" >   
+          {{i.Subject}}<br>
+          <span class="text-muted mb-0" ><strong>Note:</strong>{{i.note}}</span></td>
         <td>{% for attach in i.Attachments.all %}
             <a href="/media/{{attach}}" style="text-decoration: none;">{{attach|truncatechars:20}}</a>    
             {%if attach|extensiontags == "pdf"%}   
@@ -147,8 +147,8 @@
               <hr style="margin:0em">
             {%endif%}<br>
             {%endfor%}</td>
-        <td value="{{i.created|date:"d/m/Y"}}">{{i.created|date:"d/m/Y"}}</td>
-        <td>{{i.date_to_close|date:"d/m/Y"}}</td>
+        <td style="width:9%" value="{{i.created|date:"d/m/Y"}}">{{i.created|date:"d/m/Y H:i"}}</td>
+        <td style="width:9%" >{{i.date_to_close|date:"d/m/Y"}}</td>
         <td >            <span
           {% if i.status == "open" %}
               class="badge text-bg-danger"

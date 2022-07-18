@@ -31,12 +31,13 @@ def create_data(request):
                     subjectWithoutReply=subjectText.replace(word,"").strip() 
                     print(subjectWithoutReply)
             dataEmail=Email_email.objects.all().filter(Q(Subject=subjectWithoutReply,created__gte=datetime.now()-timedelta(days=1)))
-            if dataEmail.count !=0:
+            print(dataEmail.count())
+            if dataEmail.count() !=0:
                 dataEmail=dataEmail.first()
                 for f in request.data.getlist('Attachments'):
                     file = UploadFile.objects.create(file=f)
                     dataEmail.Attachments.add(file)
-                if dataEmail.sender!=request.data['sender']:
+                if dataEmail.sender != request.data['sender']:
                     try:
                         dataEmail.note= dataEmail.note + request.data['sender']
                     except:

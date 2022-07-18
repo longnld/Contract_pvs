@@ -7,7 +7,8 @@ from rest_framework import status
 from.models import Email_email,UploadFile
 from .serializers import Email_email_Serializer
 from rest_framework.decorators import api_view
-import datetime
+from datetime import datetime
+from datetime import timedelta
 from django.db.models import Q
 from.forms import EmailFormUpdate
 # Create your views here.
@@ -15,17 +16,55 @@ from.forms import EmailFormUpdate
   
 @api_view(['POST'])
 def create_data(request):
-    Subject= request.data['Subject']
-    data_email = Email_email.objects.create(Subject=Subject)
-    for f in request.data.getlist('Attachments'):
-        file = UploadFile.objects.create(file=f)
-        data_email.Attachments.add(file)
-    data_email.sender=request.data['sender']
-    data_email.created=datetime.datetime.now()
-    data_email.save()
-    serializer = Email_email_Serializer(data_email)
-    
-    return Response(serializer.data, status=status.HTTP_201_CREATED)
+    replyFilter=["RE","Re","Trả lời"]
+    subject= request.data['Subject']
+    subjectText=subject.replace(":","",1)
+    if request.data['sender'] == "sales.promotion@kcc.com":
+        return Response("sales.promotion@kcc.com", status=status.HTTP_201_CREATED)
+    else:
+        # q=Email_email.objects.all().filter(Q(Subject__icontains=request.data['Subject'],sender=request.data['sender']))
+        # print(q)
+        if any(word in subjectText for word in replyFilter ):
+            for word in replyFilter:
+                subjectWithoutReplyIndex=subjectText.find(word)
+                if subjectWithoutReplyIndex!= -1:
+                    subjectWithoutReply=subjectText.replace(word,"").strip() 
+                    print(subjectWithoutReply)
+            dataEmail=Email_email.objects.all().filter(Q(Subject=subjectWithoutReply,created__gte=datetime.now()-timedelta(days=1)))
+            if dataEmail.count !=0:
+                dataEmail=dataEmail.first()
+                for f in request.data.getlist('Attachments'):
+                    file = UploadFile.objects.create(file=f)
+                    dataEmail.Attachments.add(file)
+                if dataEmail.sender!=request.data['sender']:
+                    try:
+                        dataEmail.note= dataEmail.note + request.data['sender']
+                    except:
+                        dataEmail.note=request.data['sender']               
+                dataEmail.save()
+                serializer = Email_email_Serializer(dataEmail)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            else:
+                dataEmail = Email_email.objects.create(Subject=subjectWithoutReply)
+                for f in request.data.getlist('Attachments'):
+                    file = UploadFile.objects.create(file=f)
+                    dataEmail.Attachments.add(file)
+                dataEmail.sender=request.data['sender']
+                dataEmail.created=datetime.now()
+                dataEmail.save()
+                serializer = Email_email_Serializer(dataEmail)       
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+                dataEmail = Email_email.objects.create(Subject=subject)
+                for f in request.data.getlist('Attachments'):
+                    file = UploadFile.objects.create(file=f)
+                    dataEmail.Attachments.add(file)
+                dataEmail.sender=request.data['sender']
+                dataEmail.created=datetime.now()
+                dataEmail.save()
+                serializer = Email_email_Serializer(dataEmail)       
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 def getlist_Data(request):
     if request.GET.get("key_word",""):
         key_word=request.GET.get("key_word","")

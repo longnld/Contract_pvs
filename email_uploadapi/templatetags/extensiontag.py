@@ -4,5 +4,5 @@ register =template.Library()
 
 @register.filter(name="extensiontags")
 def extensiontags(value,*args):
-    slices=str(value).split(".")
-    return slices[1]
+    if value.endswith(".pdf"):
+        return "pdf"

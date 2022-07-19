@@ -136,8 +136,8 @@
         <td  style="width:25%" >   
           {{i.Subject}}<br>
           <span class="text-muted mb-0" ><strong>Note:</strong>{{i.note}}</span></td>
-        <td>{% for attach in i.Attachments.all %}
-            <a href="/media/{{attach}}" style="text-decoration: none;">{{attach|truncatechars:20}}</a>    
+        <td style="width:25%">{% for attach in i.Attachments.all %}
+            <a href="/media/{{attach}}" style="text-decoration: none;">{{attach}}</a>    
             {%if attach|extensiontags == "pdf"%}   
             <span  type="button"  data-toggle="modal" 
               data-target="#exampleModal"

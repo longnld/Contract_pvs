@@ -16,21 +16,19 @@ from.forms import EmailFormUpdate
   
 @api_view(['POST'])
 def create_data(request):
+    print(request.data)
     replyFilter=["RE","Re","Trả lời"]
     subject= request.data['Subject']
     subjectText=subject.replace(":","",1)
     if request.data['sender'] == "sales.promotion@kcc.com":
         return Response("sales.promotion@kcc.com", status=status.HTTP_201_CREATED)
-    else:
-        # q=Email_email.objects.all().filter(Q(Subject__icontains=request.data['Subject'],sender=request.data['sender']))
-        # print(q)
+    elif request.data['sender'].endswith("kcc.com"):
         if any(word in subjectText for word in replyFilter ):
             for word in replyFilter:
                 subjectWithoutReplyIndex=subjectText.find(word)
                 if subjectWithoutReplyIndex!= -1:
                     subjectWithoutReply=subjectText.replace(word,"").strip() 
-                    print(subjectWithoutReply)
-            dataEmail=Email_email.objects.all().filter(Q(Subject=subjectWithoutReply,created__gte=datetime.now()-timedelta(days=1)))
+            dataEmail=Email_email.objects.all().filter(Q(Subject__icontains=subjectWithoutReply,created__gte=datetime.now()-timedelta(days=2)))
             print(dataEmail.count())
             if dataEmail.count() !=0:
                 dataEmail=dataEmail.first()
@@ -65,6 +63,8 @@ def create_data(request):
                 dataEmail.save()
                 serializer = Email_email_Serializer(dataEmail)       
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
+    else:
+        return Response("Not kcc account", status=status.HTTP_201_CREATED)
 
 def getlist_Data(request):
     if request.GET.get("key_word",""):

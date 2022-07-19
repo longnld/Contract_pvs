@@ -7,3 +7,5 @@ def extensiontags(value,*args):
     value=str(value)
     if value.endswith(".pdf"):
         return "pdf"
+    if value.endswith(".png"):
+        return "png"

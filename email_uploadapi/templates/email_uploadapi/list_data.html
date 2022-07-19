@@ -137,7 +137,9 @@
           {{i.Subject}}<br>
           <span class="text-muted mb-0" ><strong>Note:</strong>{{i.note}}</span></td>
         <td style="width:25%">{% for attach in i.Attachments.all %}
-            {%if attach|extensiontags != "png"%}
+            {%if attach|extensiontags == "png"%}
+            <a href="/media/{{attach}}" style="display:none">{{attach}}</a>
+            {%else%}
             <a href="/media/{{attach}}" style="text-decoration: none;">{{attach}}</a>
             {%endif%}
             {%if attach|extensiontags == "pdf"%}   

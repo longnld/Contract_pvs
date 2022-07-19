@@ -141,7 +141,6 @@
             <a href="/media/{{attach}}" style="display:none">{{attach}}</a>
             {%else%}
             <a href="/media/{{attach}}" style="text-decoration: none;">{{attach}}</a>
-            {%endif%}
             {%if attach|extensiontags == "pdf"%}   
             <span  type="button"  data-toggle="modal" 
               data-target="#exampleModal"
@@ -150,6 +149,7 @@
               style="float:right"class="material-symbols-outlined">task</span>   
               <hr style="margin:0em">
             {%endif%}<br>
+            {%endif%}
             {%endfor%}</td>
         <td style="width:9%" value="{{i.created|date:"d/m/Y"}}">{{i.created|date:"d/m/Y H:i"}}</td>
         <td style="width:9%" >{{i.date_to_close|date:"d/m/Y"}}</td>

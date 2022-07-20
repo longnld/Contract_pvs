@@ -18,6 +18,7 @@ from.forms import EmailFormUpdate
 def create_data(request):
     print(request.data)
     replyFilter=["RE","Re","Trả lời"]
+    replyFilter =["FW","fw","Fwd"]
     subject= request.data['Subject']
     subjectText=subject.replace(":","",1)
     if request.data['sender'] == "sales.promotion@kcc.com":
@@ -28,6 +29,7 @@ def create_data(request):
                 subjectWithoutReplyIndex=subjectText.find(word)
                 if subjectWithoutReplyIndex!= -1:
                     subjectWithoutReply=subjectText.replace(word,"").strip() 
+                    subjectFw=subjectText.replace(word,"FW:").strip()
             dataEmail=Email_email.objects.all().filter(Q(Subject__icontains=subjectWithoutReply,created__gte=datetime.now()-timedelta(days=2)))
             print(dataEmail.count())
             if dataEmail.count() !=0:
@@ -44,7 +46,18 @@ def create_data(request):
                 serializer = Email_email_Serializer(dataEmail)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             else:
-                dataEmail = Email_email.objects.create(Subject=subjectWithoutReply)
+                dataEmail = Email_email.objects.create(Subject=subjectFw)
+                for f in request.data.getlist('Attachments'):
+                    file = UploadFile.objects.create(file=f)
+                    dataEmail.Attachments.add(file)
+                dataEmail.sender=request.data['sender']
+                dataEmail.created=datetime.now()
+                dataEmail.save()
+                serializer = Email_email_Serializer(dataEmail)       
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        elif any(word in subjectText for word in replyFilter ):
+                subjectFw=subjectText.replace(word,"FW:").strip()
+                dataEmail = Email_email.objects.create(Subject=subjectFw)
                 for f in request.data.getlist('Attachments'):
                     file = UploadFile.objects.create(file=f)
                     dataEmail.Attachments.add(file)
@@ -54,15 +67,15 @@ def create_data(request):
                 serializer = Email_email_Serializer(dataEmail)       
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
-                dataEmail = Email_email.objects.create(Subject=subject)
-                for f in request.data.getlist('Attachments'):
-                    file = UploadFile.objects.create(file=f)
-                    dataEmail.Attachments.add(file)
-                dataEmail.sender=request.data['sender']
-                dataEmail.created=datetime.now()
-                dataEmail.save()
-                serializer = Email_email_Serializer(dataEmail)       
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            dataEmail = Email_email.objects.create(Subject=subject)
+            for f in request.data.getlist('Attachments'):
+                file = UploadFile.objects.create(file=f)
+                dataEmail.Attachments.add(file)
+            dataEmail.sender=request.data['sender']
+            dataEmail.created=datetime.now()
+            dataEmail.save()
+            serializer = Email_email_Serializer(dataEmail)       
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
         return Response("Not kcc account", status=status.HTTP_201_CREATED)
 

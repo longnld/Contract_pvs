@@ -95,7 +95,7 @@ def email_update(request,pk):
             email.Subject=form.cleaned_data['Subject']
             email.note=form.cleaned_data['note']
             if email.status =='close':               
-                email.date_to_close=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                email.date_to_close=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 print("close")
             else :
                 email.date_to_close=None

@@ -1,4 +1,5 @@
 
+from urllib import response
 from django.shortcuts import render,redirect
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -16,9 +17,8 @@ from.forms import EmailFormUpdate
   
 @api_view(['POST'])
 def create_data(request):
-    print(request.data)
     replyFilter=["RE","Re","Trả lời"]
-    replyFilter =["FW","fw","Fwd"]
+    fwFilter =["FW","fw","Fwd"]
     subject= request.data['Subject']
     subjectText=subject.replace(":","",1)
     if request.data['sender'] == "sales.promotion@kcc.com":
@@ -31,8 +31,7 @@ def create_data(request):
                     subjectWithoutReply=subjectText.replace(word,"").strip() 
                     subjectFw=subjectText.replace(word,"FW:").strip()
             dataEmail=Email_email.objects.all().filter(Q(Subject__icontains=subjectWithoutReply,created__gte=datetime.now()-timedelta(days=2)))
-            print(dataEmail.count())
-            if dataEmail.count() !=0:
+            if dataEmail.count() != 0:
                 dataEmail=dataEmail.first()
                 for f in request.data.getlist('Attachments'):
                     file = UploadFile.objects.create(file=f)
@@ -55,7 +54,7 @@ def create_data(request):
                 dataEmail.save()
                 serializer = Email_email_Serializer(dataEmail)       
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
-        elif any(word in subjectText for word in replyFilter ):
+        elif any(word in subjectText for word in fwFilter ):
                 subjectFw=subjectText.replace(word,"FW:").strip()
                 dataEmail = Email_email.objects.create(Subject=subjectFw)
                 for f in request.data.getlist('Attachments'):
